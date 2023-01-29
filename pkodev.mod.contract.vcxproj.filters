@@ -2,5 +2,32 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="utils.cpp" />
+    <ClCompile Include="import.cpp">
+      <Filter>pkodev.mod.loader</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="utils.h" />
+    <ClInclude Include="import.h">
+      <Filter>pkodev.mod.loader</Filter>
+    </ClInclude>
+    <ClInclude Include="hook.h">
+      <Filter>pkodev.mod.loader</Filter>
+    </ClInclude>
+    <ClInclude Include="address.h">
+      <Filter>pkodev.mod.loader</Filter>
+    </ClInclude>
+    <ClInclude Include="loader.h">
+      <Filter>pkodev.mod.loader</Filter>
+    </ClInclude>
+    <ClInclude Include="structure.h">
+      <Filter>pkodev.mod.loader</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="pkodev.mod.loader">
+      <UniqueIdentifier>{04230791-77ff-435d-a1cc-f4a22afea5d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

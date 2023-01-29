@@ -1,184 +1,70 @@
 #include <Windows.h>
 #include <detours.h>
+#include <nlohmann/json.hpp>
 
-#include <cstdio>
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+#include <unordered_set>
 
 #include "loader.h"
+#include "address.h"
+#include "import.h"
+#include "hook.h"
+#include "structure.h"
+#include "utils.h"
 
-namespace pkodev
+using namespace pkodev;
+
+/*
+
+	File: pkodev.mod.contract.json
+	
+	{
+		"itemType" : 99,
+		"colorActive": "0xFFFFA500",
+		"colorCompleted" : "0xFF00FF00",
+		"stringSet" : {
+			"STRING_001" : 1000,
+			"STRING_002" : 1001,
+			"STRING_003" : 1002,
+			"STRING_004" : 1003
+		}
+	}
+
+	File: Client\scripts\table\StringSet.txt
+	
+	[1000]	"(Completed)"
+	[1001]	"(Active)"
+	[1002]	"Hunt: '{0}' x {1}"
+	[1003]	"Progress: {0} / {1}"
+
+*/
+
+struct Settings final {
+    unsigned short int itemType{ 99 };
+    unsigned int colorActive{ 0xFFFFA500 };
+    unsigned int colorCompleted{ 0xFF00FF00 };
+    using i10n = std::unordered_map<std::string, int>;
+    i10n language{ {"STRING_001", 1000}, {"STRING_002", 1001},
+        {"STRING_003", 1002}, {"STRING_004", 1003} };
+    Settings() = default;
+};
+
+void from_json(const nlohmann::json& j, Settings& settings);
+bool LoadSettings(const std::filesystem::path& path, Settings& settings);
+std::ostream& Log(std::ostream& os);
+
+Settings g_Settings;
+
+BOOL APIENTRY DllMain(HMODULE hModule,
+    DWORD  ul_reason_for_call,
+    LPVOID lpReserved
+)
 {
-    namespace address
-    {
-        // Game.exe 0 (1222073761)
-        namespace GAME_13X_0
-        {
-            // void CItemCommand::AddHint(int x, int y)
-            const unsigned int CItemCommand__AddHint = 0x0048B830;
-
-            // class CCommandObj
-            const unsigned int CCommandObj = 0x00669920;
-
-            // void PushHint(const char* str, DWORD color = COLOR_WHITE, int height = 5, int font = 0, int index = -1)
-            const unsigned int CCommandObj__PushHint = 0x00410310;
-
-            // void CCommandObj::AddHintHeight( int height )
-            const unsigned int CCommandObj__AddHintHeight = 0x00487D60;
-
-            // void CCommandObj::SetHintIsCenter( bool v ) 
-            const unsigned int CCommandObj__SetHintIsCenter__Byte = 0x00669938;
-
-            // inline CChaRecord* GetChaRecordInfo( int nTypeID )
-            const unsigned int GetChaRecordInfo = 0x0040CE40;
-        }
-
-        // Game.exe 1 (1243412597)
-        namespace GAME_13X_1
-        {
-            // void CItemCommand::AddHint(int x, int y)
-            const unsigned int CItemCommand__AddHint = 0x0048B8F0;
-
-            // class CCommandObj
-            const unsigned int CCommandObj = 0x00669920;
-
-            // void PushHint(const char* str, DWORD color = COLOR_WHITE, int height = 5, int font = 0, int index = -1)
-            const unsigned int CCommandObj__PushHint = 0x00410310;
-
-            // void CCommandObj::AddHintHeight( int height )
-            const unsigned int CCommandObj__AddHintHeight = 0x00487E20;
-
-            // void CCommandObj::SetHintIsCenter( bool v ) 
-            const unsigned int CCommandObj__SetHintIsCenter__Byte = 0x00669938;
-
-            // inline CChaRecord* GetChaRecordInfo( int nTypeID )
-            const unsigned int GetChaRecordInfo = 0x0040CE40;
-        }
-
-        // Game.exe 2 (1252912474)
-        namespace GAME_13X_2
-        {
-            // void CItemCommand::AddHint(int x, int y)
-            const unsigned int CItemCommand__AddHint = 0x0048B990;
-
-            // class CCommandObj
-            const unsigned int CCommandObj = 0x00669920;
-
-            // void PushHint(const char* str, DWORD color = COLOR_WHITE, int height = 5, int font = 0, int index = -1)
-            const unsigned int CCommandObj__PushHint = 0x00410310;
-
-            // void CCommandObj::AddHintHeight( int height )
-            const unsigned int CCommandObj__AddHintHeight = 0x00487EC0;
-
-            // void CCommandObj::SetHintIsCenter( bool v ) 
-            const unsigned int CCommandObj__SetHintIsCenter__Byte = 0x00669938;
-
-            // inline CChaRecord* GetChaRecordInfo( int nTypeID )
-            const unsigned int GetChaRecordInfo = 0x0040CE40;
-        }
-
-        // Game.exe 3 (1244511158)
-        namespace GAME_13X_3
-        {
-            // void CItemCommand::AddHint(int x, int y)
-            const unsigned int CItemCommand__AddHint = 0x0048B980;
-
-            // class CCommandObj
-            const unsigned int CCommandObj = 0x00669920;
-
-            // void PushHint(const char* str, DWORD color = COLOR_WHITE, int height = 5, int font = 0, int index = -1)
-            const unsigned int CCommandObj__PushHint = 0x00410310;
-
-            // void CCommandObj::AddHintHeight( int height )
-            const unsigned int CCommandObj__AddHintHeight = 0x00487EB0;
-
-            // void CCommandObj::SetHintIsCenter( bool v ) 
-            const unsigned int CCommandObj__SetHintIsCenter__Byte = 0x00669938;
-
-            // inline CChaRecord* GetChaRecordInfo( int nTypeID )
-            const unsigned int GetChaRecordInfo = 0x0040CE40;
-        }
-
-        // Game.exe 4 (1585009030)
-        namespace GAME_13X_4
-        {
-            // void CItemCommand::AddHint(int x, int y)
-            const unsigned int CItemCommand__AddHint = 0x0048BB80;
-
-            // class CCommandObj
-            const unsigned int CCommandObj = 0x00669938;
-
-            // void PushHint(const char* str, DWORD color = COLOR_WHITE, int height = 5, int font = 0, int index = -1)
-            const unsigned int CCommandObj__PushHint = 0x00410410;
-
-            // void CCommandObj::AddHintHeight( int height )
-            const unsigned int CCommandObj__AddHintHeight = 0x00488030;
-
-            // void CCommandObj::SetHintIsCenter( bool v ) 
-            const unsigned int CCommandObj__SetHintIsCenter__Byte = 0x00669950;
-
-            // inline CChaRecord* GetChaRecordInfo( int nTypeID )
-            const unsigned int GetChaRecordInfo = 0x0040CF40;
-        }
-
-        // Game.exe 5 (1207214236)
-        namespace GAME_13X_5
-        {
-            // void CItemCommand::AddHint(int x, int y)
-            const unsigned int CItemCommand__AddHint = 0x0048B500;
-
-            // class CCommandObj
-            const unsigned int CCommandObj = 0x00669928;
-
-            // void PushHint(const char* str, DWORD color = COLOR_WHITE, int height = 5, int font = 0, int index = -1)
-            const unsigned int CCommandObj__PushHint = 0x00410300;
-
-            // void CCommandObj::AddHintHeight( int height )
-            const unsigned int CCommandObj__AddHintHeight = 0x00487A30;
-
-            // void CCommandObj::SetHintIsCenter( bool v ) 
-            const unsigned int CCommandObj__SetHintIsCenter__Byte = 0x00669940;
-
-            // inline CChaRecord* GetChaRecordInfo( int nTypeID )
-            const unsigned int GetChaRecordInfo = 0x0040CE30;
-        }
-    }
-
-    namespace pointer
-    {
-        // void CItemCommand::AddHint(int x, int y)
-        typedef void (__thiscall* CItemCommand__AddHint__Ptr)(void*, int, int);
-        CItemCommand__AddHint__Ptr CItemCommand__AddHint = (CItemCommand__AddHint__Ptr)(void*)(address::MOD_EXE_VERSION::CItemCommand__AddHint);
-
-        // void PushHint(const char* str, DWORD color = COLOR_WHITE, int height = 5, int font = 0, int index = -1)
-        typedef void(__thiscall* CCommandObj__PushHint__Ptr)(void*, const char*, unsigned int, int, int);
-        CCommandObj__PushHint__Ptr CCommandObj__PushHint = (CCommandObj__PushHint__Ptr)(void*)(address::MOD_EXE_VERSION::CCommandObj__PushHint);
-
-        // void CCommandObj::AddHintHeight( int height )
-        typedef void(__thiscall* CCommandObj__AddHintHeight__Ptr)(void*, int);
-        CCommandObj__AddHintHeight__Ptr CCommandObj__AddHintHeight = (CCommandObj__AddHintHeight__Ptr)(void*)(address::MOD_EXE_VERSION::CCommandObj__AddHintHeight);
-
-        // inline CChaRecord* GetChaRecordInfo( int nTypeID )
-        typedef void* (__cdecl* GetChaRecordInfo__Ptr)(int);
-        GetChaRecordInfo__Ptr GetChaRecordInfo = (GetChaRecordInfo__Ptr)(void*)(address::MOD_EXE_VERSION::GetChaRecordInfo);
-    }
-
-    namespace hook
-    {
-        // void CItemCommand::AddHint(int x, int y)
-        void __fastcall CItemCommand__AddHint(void* This, void* NotUsed, int x, int y);
-    }
-}
-
-// Entry point
-BOOL APIENTRY DllMain( HMODULE hModule,
-                       DWORD  ul_reason_for_call,
-                       LPVOID lpReserved
-                     )
-{
-    // Nothing to do . . .
     return TRUE;
 }
 
-// Get mod information
 void GetModInformation(mod_info& info)
 {
     strcpy_s(info.name, TOSTRING(MOD_NAME));
@@ -187,129 +73,125 @@ void GetModInformation(mod_info& info)
     info.exe_version = MOD_EXE_VERSION;
 }
 
-// Start the mod
 void Start(const char* path)
 {
-    // Enable hooks
+    const auto settingsFilePath = std::filesystem::path(path)
+		/ std::string(TOSTRING(MOD_NAME)).append(".json");
+
+    if (LoadSettings(settingsFilePath, g_Settings) == false) {
+        g_Settings = Settings();
+        Log(std::cerr) << "Failed to load settings from the file "
+            << settingsFilePath.string() << "!\n";
+        Log(std::cerr) << "Default settings has been set.\n";
+    }
+    else {
+        Log(std::clog) << "Settings successfully loaded from the file "
+            << settingsFilePath.string() << "!\n";
+    }
+
     DetourRestoreAfterWith();
     DetourTransactionBegin();
     DetourUpdateThread(GetCurrentThread());
-    DetourAttach(&(PVOID&)pkodev::pointer::CItemCommand__AddHint, pkodev::hook::CItemCommand__AddHint);
+    DetourAttach(reinterpret_cast<PVOID*>(&import::CItemCommand__AddHint), reinterpret_cast<PVOID>(&hook::CItemCommand__AddHint));
     DetourTransactionCommit();
 }
 
-// Stop the mod
 void Stop()
 {
-    // Disable hooks
     DetourTransactionBegin();
     DetourUpdateThread(GetCurrentThread());
-    DetourDetach(&(PVOID&)pkodev::pointer::CItemCommand__AddHint, pkodev::hook::CItemCommand__AddHint);
+    DetourDetach(reinterpret_cast<PVOID*>(&import::CItemCommand__AddHint), reinterpret_cast<PVOID>(&hook::CItemCommand__AddHint));
     DetourTransactionCommit();
 }
 
-// void CItemCommand::AddHint(int x, int y)
-void __fastcall pkodev::hook::CItemCommand__AddHint(void* This, void* NotUsed,
-    int x, int y)
+void from_json(const nlohmann::json& j, Settings& settings)
 {
-    // Read unsigned short int from memory
-    auto read_uint16 = [](void* from, unsigned int offset) -> unsigned short int
-    {
-        return *reinterpret_cast<unsigned short int*>(reinterpret_cast<unsigned int>(from) + offset);
-    };
+    std::string colorActive, colorCompleted;
 
-    // Read unsigned int from memory
-    auto read_uint32 = [](void* from, unsigned int offset) -> unsigned int
-    {
-        return *reinterpret_cast<unsigned int*>(reinterpret_cast<unsigned int>(from) + offset);
-    };
+    j.at("itemType").get_to(settings.itemType);
+    j.at("colorActive").get_to(colorActive);
+    j.at("colorCompleted").get_to(colorCompleted);
+    j.at("stringSet").get_to(settings.language);
 
-    // Check that there is the only one item in the slot
-    if (read_uint16(This, 0x3E) == 1)
-    {
-        // Get pointer to the data of the item which hint is rendering at the moment (from ItemInfo.txt)
-        void* item_record = reinterpret_cast<void*>( read_uint32(This, 0x38) );
+    settings.colorActive = std::stoul(colorActive, nullptr, 16);
+    settings.colorCompleted = std::stoul(colorCompleted, nullptr, 16);
+}
 
-        // Check the item type
-        if (read_uint32(item_record, 0x0134) == 99)
-        {
-            // Search for the monster data (from CharacterInfo.txt)
-            void* cha_record = pkodev::pointer::GetChaRecordInfo( read_uint16(This, 0x54) );
-
-            // Check that monster is found
-            if (cha_record != nullptr)
-            {
-                // Buffer for strings
-                static char buf[128]{ 0x00 };
-
-                // Read the contract data
-                unsigned short int max = read_uint16(This, 0x58);
-                unsigned short int cur = read_uint16(This, 0x5C);
-
-                // Read pointer to the CCommandObj object
-                void* command_obj_ptr = reinterpret_cast<void*>( pkodev::address::MOD_EXE_VERSION::CCommandObj  );
-
-                // Set center alignment
-                *reinterpret_cast<unsigned char*>(
-                    pkodev::address::MOD_EXE_VERSION::CCommandObj__SetHintIsCenter__Byte
-                ) = 0x01;
-
-                // Get the monster name
-                const char* cha_name = reinterpret_cast<const char*>(
-                    reinterpret_cast<unsigned int>(cha_record) + 0x08 
-                );
-
-                // Get the item name
-                const char* item_name = reinterpret_cast<const char*>( 
-                    reinterpret_cast<unsigned int>(item_record) + 0x08 
-                );
-
-                // Get the item description
-                const char* item_desc = reinterpret_cast<const char*>( 
-                    reinterpret_cast<unsigned int>(item_record) + 0x0258 
-                );
-
-                // Print the contract name
-                pkodev::pointer::CCommandObj__PushHint(command_obj_ptr, item_name, 0xFFFFFFFF, 5, 1);
-                pkodev::pointer::CCommandObj__AddHintHeight(command_obj_ptr, 6);
-
-                // Print the contract status
-                {
-                    // Check that the contract is completed
-                    if (cur >= max)
-                    {
-                        // Completed
-                        pkodev::pointer::CCommandObj__PushHint(command_obj_ptr, "(Completed)", 0xFF00FF00, 5, 1);
-                    }
-                    else
-                    {
-                        // Still active
-                        pkodev::pointer::CCommandObj__PushHint(command_obj_ptr, "(Active)", 0xFFFFA500, 5, 1);
-                    }
-
-                    // Add height
-                    pkodev::pointer::CCommandObj__AddHintHeight(command_obj_ptr, 6);
-                }
-
-                // Print the monster name
-                sprintf_s(buf, sizeof(buf), "Hunt: '%s' x %d", cha_name, max);
-                pkodev::pointer::CCommandObj__PushHint(command_obj_ptr, buf, 0xFFFFFFFF, 5, 1);
-                pkodev::pointer::CCommandObj__AddHintHeight(command_obj_ptr, 6);
-
-                // Print progress
-                sprintf_s(buf, sizeof(buf), "Progress: %d / %d", cur, max);
-                pkodev::pointer::CCommandObj__PushHint(command_obj_ptr, buf, 0xFFFFFFFF, 5, 1);
-                pkodev::pointer::CCommandObj__AddHintHeight(command_obj_ptr, 6);
-
-                // Print description
-                pkodev::pointer::CCommandObj__PushHint(command_obj_ptr, item_desc, 0xFFFFFFFF, 5, 1);
-
-                // Exit from the hook
-                return;
-            }
-        }
+bool LoadSettings(const std::filesystem::path& path, Settings& settings)
+{
+    std::ifstream file(path, std::ios::in);
+    if (file.is_open() == false) {
+        Log(std::cerr) << "Failed to open the file " << path.string() << "!\n";
+        return false;
     }
 
-    // Call the original method void CItemCommand::AddHint(int x, int y)
-    pkodev::pointer::CItemCommand__AddHint(This, x, y);
+    try {
+        const auto jsonData = nlohmann::json::parse(file);
+        settings = jsonData.get<Settings>();
+        for (const auto& str : { "STRING_001", "STRING_002", "STRING_003", "STRING_004" }) {
+            if (settings.language.count(str) != 1) {
+                Log(std::cerr) << "StringSet ID for string '" << str << "' not found in the settings file!\n";
+                return false;
+            }
+        }
+        return true;
+    }
+    catch (const nlohmann::json::exception& e)  {
+        Log(std::cerr) << "JSON error: " << e.what() << '\n';
+    }
+    catch (const std::exception& e) {
+        Log(std::cerr) << "Error: " << e.what() << '\n';
+    }
+
+    return false;
+}
+
+std::ostream& Log(std::ostream& os)
+{
+    return (os << '[' << TOSTRING(MOD_NAME) << "] ");
+}
+
+void __fastcall hook::CItemCommand__AddHint(void* This, void*, int x, int y)
+{
+    // This + 0x3E = number of items in the current slot
+    if (utils::get<unsigned short int, 0x3E>(This) != 1) {
+        import::CItemCommand__AddHint(This, x, y);
+        return;
+    }
+
+    // This + 0x38 = CItemRecord class object
+    const structure::CItemRecord* itemRecord = utils::get<structure::CItemRecord*, 0x38>(This);
+    if ( (itemRecord == nullptr) || (itemRecord->sType != g_Settings.itemType) ) {
+        import::CItemCommand__AddHint(This, x, y);
+        return;
+    }
+
+    // This + 0x54 = ITEMATTR_VAL_STR (Monster ID)
+    const structure::CChaRecord* chaRecord = import::GetChaRecordInfo(utils::get<unsigned short int, 0x54>(This));
+    if (chaRecord == nullptr) {
+        import::CItemCommand__AddHint(This, x, y);
+        return; 
+    }
+
+    auto GetString = [](const std::string& id) -> std::string {
+        return import::CLanguageRecord__GetString(import::g_oLangRec, g_Settings.language[id]);
+    };
+
+    auto PushHint = [](const std::string& str, unsigned int color = 0xFFFFFFFF) -> void {
+        import::CCommandObj__PushHint(import::CCommandObj, str.c_str(), color, 5, 1);
+        import::CCommandObj__AddHintHeight(import::CCommandObj, 6);
+    };
+
+    const auto amount = utils::get<unsigned short int, 0x58>(This); // This + 0x58 = ITEMATTR_VAL_AGI (monsters amount)
+    const auto progress = utils::get<unsigned short int, 0x5C>(This); // This + 0x5C = ITEMATTR_VAL_DEX (current progress)
+    const auto statusDesc = ( (progress >= amount) ? GetString("STRING_001") : GetString("STRING_002") );
+    const auto statusColor = ( (progress >= amount) ? g_Settings.colorCompleted : g_Settings.colorActive );
+
+    utils::set<bool>(address::MOD_EXE_VERSION::CCommandObj__SetHintIsCenter__Byte, true);
+
+    PushHint(itemRecord->szName);
+    PushHint(statusDesc, statusColor);
+    PushHint(utils::safe_format(GetString("STRING_003"), chaRecord->szName, amount));
+    PushHint(utils::safe_format(GetString("STRING_004"), progress, amount));
+    PushHint(itemRecord->szDescriptor);
 }
