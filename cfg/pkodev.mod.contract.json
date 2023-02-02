@@ -1,0 +1,11 @@
+{
+	"itemType" : 99,
+	"colorActive": "0xFFFFA500",
+	"colorCompleted" : "0xFF00FF00",
+	"stringSet" : {
+		"STRING_001" : 1000,
+		"STRING_002" : 1001,
+		"STRING_003" : 1002,
+		"STRING_004" : 1003
+	}
+}
