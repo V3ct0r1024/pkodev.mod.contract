@@ -1,16 +1,21 @@
-[![PKOdev.NET](https://a.radikal.ru/a07/2202/b6/64077957c2ec.png "PKOdev.NET")](http://pkodev.net "PKOdev.NET")
-## TOP/PKO/KOP mod: pkodev.mod.contract
-Client-side modification for Contract system. Modification for **[PKOdev.NET mod loader](https://pkodev.net/topic/5757-mod-loading-system-for-server-and-client-pkodevnet-mod-loader/)**.
+# pkodev.mod.mobdrop / Contract system for MMORPG game Tales of Pirates Online
 
-## Modification information
+[![logo-background](https://user-images.githubusercontent.com/3164064/163711104-29410e0d-3c86-411a-9319-9ffeaa62abb8.png)](http://pkodev.net "PKOdev.NET")
 
-- **Name:** pkodev.mod.contract;
-- **Version:** 1.0;
-- **Author:** V3ct0r;
-- **Type:** for client (Game.exe);
-- **Supported executable .exe files:** GAME_13X_0, GAME_13X_1, GAME_13X_2, GAME_13X_3, GAME_13X_4, GAME_13X_5.
+## Documentation
 
-## Discussion on the forum
+- Please refer to [this page](https://github.com/V3ct0r1024/pkodev.mod.contract/blob/master/doc/guide_ru.md) to get information about the system in Russian language.
+
+## Gallery
+
+![Image 1](https://raw.githubusercontent.com/V3ct0r1024/pkodev.mod.contract/master/img/active_eng.png)
+
+![Image 2](https://raw.githubusercontent.com/V3ct0r1024/pkodev.mod.contract/master/img/active_rus.png)
+![Image 3](https://raw.githubusercontent.com/V3ct0r1024/pkodev.mod.contract/master/img/completed_rus.png)
+
+![Image 4](https://raw.githubusercontent.com/V3ct0r1024/pkodev.mod.contract/master/img/bag.png)
+
+## Discussion on forum PKOdev.NET
 
 - [English section](https://pkodev.net/topic/5903-contract-system/)
 - [Russian section](https://pkodev.net/topic/5902-%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0-%D0%BA%D0%BE%D0%BD%D1%82%D1%80%D0%B0%D0%BA%D1%82%D0%BE%D0%B2/)
