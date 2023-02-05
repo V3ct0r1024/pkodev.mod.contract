@@ -75,7 +75,7 @@ The Lua script for the game server is the core of the Contracts system, which co
  
 	 -  Open the file **GameServer\resource\script\calculate\SkillEffect.lua** and at the very beginning write the line:
 
-		dofile(GetResPath("script\\calculate\\mods\\pkodev.contract.lua"))
+			dofile(GetResPath("script\\calculate\\mods\\pkodev.contract.lua"))
 
   4. The Contracts system has been successfully installed on your server. Congratulations!
     
