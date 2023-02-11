@@ -45,3 +45,7 @@ You will need the [**Visual Studio 2022 Community**](https://visualstudio.micros
 
 - [English section](https://pkodev.net/topic/5903-contract-system/);
 - [Russian section](https://pkodev.net/topic/5902-%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0-%D0%BA%D0%BE%D0%BD%D1%82%D1%80%D0%B0%D0%BA%D1%82%D0%BE%D0%B2/).
+
+## Download
+
+The latest release of the modification can be found **[here](https://github.com/V3ct0r1024/pkodev.mod.contract/releases/)**.
