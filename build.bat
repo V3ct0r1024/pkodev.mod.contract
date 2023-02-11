@@ -1,0 +1,6 @@
+msbuild pkodev.mod.contract.sln /p:Configuration="Game.exe 1.3x_0 Release" /p:Platform="x86"
+msbuild pkodev.mod.contract.sln /p:Configuration="Game.exe 1.3x_1 Release" /p:Platform="x86"
+msbuild pkodev.mod.contract.sln /p:Configuration="Game.exe 1.3x_2 Release" /p:Platform="x86"
+msbuild pkodev.mod.contract.sln /p:Configuration="Game.exe 1.3x_3 Release" /p:Platform="x86"
+msbuild pkodev.mod.contract.sln /p:Configuration="Game.exe 1.3x_4 Release" /p:Platform="x86"
+msbuild pkodev.mod.contract.sln /p:Configuration="Game.exe 1.3x_5 Release" /p:Platform="x86"
