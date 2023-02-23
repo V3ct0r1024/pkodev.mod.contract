@@ -21,16 +21,33 @@ Contracts system for the MMORPG game "Tales of Pirates".
 
 You will need the [**Visual Studio 2022 Community**](https://visualstudio.microsoft.com/vs/community/) IDE installed, which you can download for free from the Microsoft website, and the [**Git**](https://git-scm.com/) VCS.
 
-1. Open **Developer Command Prompt for VS 2022**
+### Way one - build.bat script
+
+1. Open **Developer Command Prompt for VS 2022**;
 2. Execute the following sequence of commands:
 
 	
 		git clone https://github.com/V3ct0r1024/pkodev.mod.contract.git
 		cd pkodev.mod.contract
 		build
-	**Note:** Before you begin, specify path where to download mod project files using the **cd** command.
-       
-3. .DLL files of the mod will appear in the directory **pkodev.mod.contract\bin**.
+	
+### Way two - Visual Studio GUI
+
+1. Open **Command Prompt** (cmd.exe);
+2. Execute the following sequence of commands:
+
+	
+		git clone https://github.com/V3ct0r1024/pkodev.mod.contract.git
+		cd pkodev.mod.contract
+		start .
+
+3. Double click on the file "**pkodev.mod.contract.sln**". This will launch Visual Studio 2022 Community;
+4. Select the desired version of Game.exe in the drop-down list of configurations and click the green arrow to build the modification.
+
+.DLL files of the modification will appear in the directory **pkodev.mod.contract\bin**. You can install them in the client, for example with the following command:
+
+	
+	move "Path to the .DLL file" "Path to the client mods directory"
 
 ## Gallery
 
