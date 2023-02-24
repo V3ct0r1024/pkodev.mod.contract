@@ -108,7 +108,7 @@ The Lua script for the game server is the core of the Contracts system, which co
 
 ## Creating "Contracts" and issuing them to the players
 
-"Contracts" are created using the **contract.create()** function, which takes as its arguments the **handle of a character** to which the contract is to be issued, the **ID of a monster** a player will need to defeat, and ** a number of monsters** that the player have to defeat. As a result, the function returns a tuple of three elements: **success flag**, **new item descriptor**, and **item slot number in the character's inventory**.
+"Contracts" are created using the **contract.create()** function, which takes as its arguments the **handle of a character** to which the contract is to be issued, the **ID of a monster** a player will need to defeat, and **a number of monsters** that the player have to defeat. As a result, the function returns a tuple of three elements: **success flag**, **new item descriptor**, and **item slot number in the character's inventory**.
 
 **Syntax:**
 
