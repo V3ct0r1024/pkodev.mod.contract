@@ -7,7 +7,7 @@
 
 This system for the MMORPG game "Tales of Pirates" is a "Monster Hunt" type quest, the purpose of which is to defeat a certain amount of specific monsters. A player is given a special item - **“Contract”**, which indicates which monster and how many the player have to defeat. As monsters are defeated, the player's current progress is updated in the "Contract". After defeating the required number of monsters, the "Contract" is considered completed, and the player can receive a reward by using the "Contract" item.
 
-The system consists of a [pkodev.mod.loader](https://github.com/V3ct0r1024/pkodev.mod.loader) modification for the game client (Game.exe) and a Lua script for the game server (GameServer.exe).
+The system consists of a [**pkodev.mod.loader**](https://github.com/V3ct0r1024/pkodev.mod.loader) modification for the game client (Game.exe) and a Lua script for the game server (GameServer.exe).
 
 Modification of the client is necessary to visualize the specified characteristics of the item in the hint field for the "Contract" when the player hover the mouse cursor over it's item. The target monster ID, the number of monsters already defeated, and the number of monsters needed to complete the "Contract" are stored in the following item stats: ITEMATTR_VAL_STR, ITEMATTR_VAL_DEX, and ITEMATTR_VAL_AGI, respectively. The purpose of the mod is to display these item characteristics in a form understandable to the player. For example, if ITEMATTR_VAL_STR = 103, ITEMATTR_VAL_DEX = 5, and ITEMATTR_VAL_AGI = 10, then the player will see the following information when hovering the mouse over "Contract":
 
@@ -81,18 +81,18 @@ The Lua script for the game server is the core of the Contracts system, which co
     
 ### Game client
 
- 1.  Add a "Contract" item to the **[Client\scripts\table\ItemInfo.txt](https://github.com/V3ct0r1024/pkodev.mod.contract/blob/master/GameServer/resource/ItemInfo.txt)** file (see above "Contracts system" > "Game server" > point 1). **[Compile](https://pkodev.net/topic/26-client-txt-tables-compiling/)** ItemInfo.txt.
+ 1.  Add a "Contract" item to the **[Client\scripts\table\ItemInfo.txt](https://github.com/V3ct0r1024/pkodev.mod.contract/blob/master/GameServer/resource/ItemInfo.txt)** file (see above "Installing the Contracts system" > "Game server" > point 1). **[Compile](https://pkodev.net/topic/26-client-txt-tables-compiling/)** ItemInfo.txt.
  2. Add to the file **[Client\scripts\table\StringSet.txt](https://github.com/V3ct0r1024/pkodev.mod.contract/blob/master/Client/scripts/table/Add%20to%20StringSet.txt%20(EN).txt)** the following strings that a player will see when hovering the mouse over the "Contract":
  
 		[1000]	"(Completed)"
 		[1001]	"(Active)"
 		[1002]	"Hunt: '{0}' x {1}"
 		[1003]	"Progress: {0} / {1}"
-	**Note 1:** If IDs of strings 1000 - 1003 are already taken, then write any free IDs instead.
-	**Note 2:** After adding these strings to the StringSet.txt file, delete the StringSet.bin file if it exists, otherwise the changes will not be applied.
-	**Note 3:** In string **1002**, marker **{0}** is the name of the monster, and **{1}** is the number of monsters to defeat. In string **1003** marker **{0}** indicates the number of monsters already defeated, marker **{1}** is similar to string 1002.
+	**Note 1:** If IDs of strings 1000 - 1003 are already taken, then write any free IDs instead.  
+	**Note 2:** After adding these strings to the StringSet.txt file, delete the StringSet.bin file if it exists, otherwise the changes will not be applied.  
+	**Note 3:** In string **1002**, marker **{0}** is the name of the monster, and **{1}** is the number of monsters to defeat. In string **1003** marker **{0}** indicates the number of monsters already defeated, marker **{1}** is similar to string **1002**.  
  3. Install mod loading system [**pkodev.mod.loader**](https://github.com/V3ct0r1024/pkodev.mod.loader) if it hasn't already been installed.
- 4. Place the mod DLL file **[pkodev.mod.contract.client.13x_{ID}.dll](https://github.com/V3ct0r1024/pkodev.mod.contract/releases/)** for your version of Game.exe and the mod settings file **[pkodev.mod.contract.json](https://github.com/V3ct0r1024/pkodev.mod.contract/blob/master/cfg/pkodev.mod.contract.json)** in the **mods** folder of the game client.
+ 4. Place the mod DLL file **[pkodev.mod.contract.client.13x_{ID}.dll](https://github.com/V3ct0r1024/pkodev.mod.contract/releases/)** for your version of Game.exe and the mod settings file **[pkodev.mod.contract.json](https://github.com/V3ct0r1024/pkodev.mod.contract/blob/master/cfg/pkodev.mod.contract.json)** in the **mods\pkodev.mod.contract** folder of the game client.
  5. Open the mod's settings file **pkodev.mod.contract.json** and write the following parameters into it according to your choice:
 
 		1. itemType - type of the item "Contract" specified in the ItemInfo.txt file. The default value is 99.
@@ -103,8 +103,8 @@ The Lua script for the game server is the core of the Contracts system, which co
 		6. STRING_003 - string ID for the "Hunt: '{0}' x {1}" label from the StringSet.txt file. The default value is 1002.
 		7. STRING_004 - string ID for the "Progress: {0} / {1}" label from the StringSet.txt file. The default value is 1003.
 		
-	**Note:** This file can be left unchanged if you used the default values in the ItemInfo.txt and StringSet.txt files.
-	6. The contracts system setup for the game client is now complete!
+	**Note:** This file can be left unchanged if you used the default values in the ItemInfo.txt and StringSet.txt files.  
+6. The contracts system setup for the game client is now complete!
 
 ## Creating "Contracts" and issuing them to the players
 
